@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Financial Health Platform</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{box-sizing:border-box}
+
+body{
+    font-family:"Segoe UI",Arial;
+    background:radial-gradient(circle at top,#ffffff,#f9fbfd);
+    margin:0;
+    color:#2c3e50;
+    transition:.3s
+}
+
+body.dark{
+    background:#0f172a;
+    color:#e5e7eb
+}
+
+body.dark .card{
+    background:#111827;
+    color:#ececed
+}
+
+header{
+    background:linear-gradient(135deg,#4ce714,#4f46e5);
+    color:white;
+    padding:35px;
+    text-align:center
+}
+
+.container{
+    max-width:1200px;
+    margin:-30px auto 40px;
+    padding:20px
+}
+
+.card{
+    background:rgb(204,218,219);
+    border-radius:14px;
+    padding:22px;
+    margin-bottom:25px;
+    box-shadow:0 15px 30px rgba(0,0,0,.08)
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px
+}
+
+.stat{
+    background:#11dbd5;
+    border-radius:12px;
+    padding:18px;
+    text-align:center
+}
+
+.stat h2{
+    margin:8px 0;
+    font-size:26px
+}
+
+form select,
+form input{
+    width:100%;
+    padding:12px;
+    margin:8px 0 14px;
+    border-radius:8px;
+    border:1px solid #ccc
+}
+
+form button{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:none;
+    background:#25bfee;
+    color:white;
+    font-size:16px;
+    cursor:pointer
+}
+
+.badge{
+    padding:6px 14px;
+    border-radius:20px;
+    color:white;
+    font-size:13px
+}
+
+.low{background:#16a34a}
+.medium{background:#f59e0b}
+.high{background:#dc2626}
+
+.dark-btn{
+    position:fixed;
+    top:20px;
+    right:20px;
+    background:#111827;
+    color:rgb(11,222,233);
+    border:none;
+    padding:10px 18px;
+    border-radius:20px;
+    cursor:pointer
+}
+
+.lang-btn{
+    position:fixed;
+    top:65px;
+    right:20px;
+    padding:8px;
+    border-radius:8px
+}
+
+.pdf-btn{
+    margin-top:12px;
+    padding:12px;
+    width:100%;
+    background:#16a34a;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:15px
+}
+
+.voice-btn{
+    margin-top:10px;
+    padding:12px;
+    width:100%;
+    background:#2563eb;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:15px
+}
+
+footer{
+    text-align:center;
+    margin-top:40px;
+    color:#6b7280
+}
+</style>
+</head>
+
+<body>
+
+<button class="dark-btn" onclick="toggleDark()">🌙 Dark</button>
+
+<select id="langSwitch" class="lang-btn" onchange="setLanguage()">
+    <option value="en">English</option>
+    <option value="hi">हिंदी</option>
+    <option value="ta">தமிழ்</option>
+</select>
+
+<header>
+<h1 
+data-en="Financial Health Assessment Platform"
+data-hi="वित्तीय स्वास्थ्य मूल्यांकन प्लेटफ़ॉर्म"
+data-ta="நிதி ஆரோக்கிய மதிப்பீட்டு தளம்">
+</h1>
+
+<p 
+data-en="AI-powered insights for smarter business decisions"
+data-hi="स्मार्ट व्यापार निर्णयों के लिए एआई विश्लेषण"
+data-ta="சிறந்த வணிக முடிவுகளுக்கான ஏஐ பகுப்பாய்வு">
+</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+<form method="POST" enctype="multipart/form-data">
+
+<label data-en="Select Industry" data-hi="उद्योग चुनें" data-ta="தொழிலைத் தேர்ந்தெடுக்கவும்"></label>
+
+<select name="industry">
+    <option>Retail</option>
+    <option>Manufacturing</option>
+    <option>Services</option>
+    <option>Logistics</option>
+    <option>E-Commerce</option>
+</select>
+
+<label data-en="Upload Financial File (CSV)" data-hi="वित्तीय फ़ाइल अपलोड करें" data-ta="நிதி கோப்பை பதிவேற்றவும்"></label>
+
+<input type="file" name="file" required>
+
+<button data-en="Analyze Business" data-hi="विश्लेषण करें" data-ta="வணிகத்தை பகுப்பாய்வு செய்யவும்"></button>
+
+</form>
+</div>
+
+{% if data %}
+
+<div class="card">
+<h3 data-en="Business Snapshot" data-hi="व्यवसाय सारांश" data-ta="வணிக சுருக்கம்"></h3>
+
+<div class="grid">
+
+<div class="stat">
+<p data-en="Health Score" data-hi="स्वास्थ्य स्कोर" data-ta="ஆரோக்கிய மதிப்பெண்"></p>
+<h2>{{ data["financial_health_score"] }}</h2>
+</div>
+
+<div class="stat">
+<p data-en="Forecasted Revenue" data-hi="अनुमानित आय" data-ta="முன்னறிவிக்கப்பட்ட வருமானம்"></p>
+<h2>{{ data["forecasted_revenue_next_month"] }}</h2>
+</div>
+
+<div class="stat">
+<p data-en="Industry" data-hi="उद्योग" data-ta="தொழில்"></p>
+<h2>{{ data["industry"] }}</h2>
+</div>
+
+<div class="stat">
+<p data-en="Credit Rating" data-hi="क्रेडिट रेटिंग" data-ta="கடன் மதிப்பீடு"></p>
+
+<span class="badge 
+{% if data['credit_rating']=='Low Risk' %}low
+{% elif data['credit_rating']=='Medium Risk' %}medium
+{% else %}high{% endif %}">
+{{ data["credit_rating"] }}
+</span>
+
+</div>
+</div>
+</div>
+
+<div class="card">
+<h3 data-en="Revenue vs Expenses" data-hi="आय बनाम खर्च" data-ta="வருமானம் vs செலவுகள்"></h3>
+<canvas id="chart"></canvas>
+</div>
+
+<div class="card">
+<h3 data-en="Investor-Ready Summary" data-hi="निवेशक रिपोर्ट" data-ta="முதலீட்டாளர் அறிக்கை"></h3>
+
+<p id="summaryText"
+data-en="{{ data['investor_summary'] }}"
+data-hi="व्यवसाय ने मजबूत आय और लाभ अर्जित किया है। वित्तीय स्थिति स्थिर और जोखिम कम है।"
+data-ta="நிறுவனம் வலுவான வருமானம் மற்றும் லாபத்தை பெற்றுள்ளது. நிதி நிலை உறுதியானது.">
+{{ data["investor_summary"] }}
+</p>
+
+<button class="voice-btn" onclick="playVoice()">🔊 Play Voice Summary</button>
+
+<a href="/download-report">
+<button class="pdf-btn"
+data-en="Download Investor Report (PDF)"
+data-hi="पीडीएफ डाउनलोड करें"
+data-ta="PDF பதிவிறக்கவும்"></button>
+</a>
+
+</div>
+
+{% endif %}
+
+</div>
+
+<footer>© 2026 Financial Health Platform</footer>
+
+<script>
+function toggleDark(){
+    document.body.classList.toggle("dark");
+}
+
+function setLanguage(){
+    const lang=document.getElementById("langSwitch").value;
+    document.querySelectorAll("[data-en]").forEach(el=>{
+        el.innerText=el.getAttribute("data-"+lang);
+    });
+}
+
+setLanguage();
+
+function playVoice(){
+    if(!("speechSynthesis" in window)) return;
+
+    speechSynthesis.cancel();
+
+    const lang=document.getElementById("langSwitch").value;
+    const txt=document.getElementById("summaryText").innerText;
+
+    const u=new SpeechSynthesisUtterance(txt);
+    u.lang = lang==="hi"?"hi-IN":lang==="ta"?"ta-IN":"en-US";
+    u.rate=1;
+
+    speechSynthesis.speak(u);
+}
+
+{% if data %}
+new Chart(document.getElementById("chart"),{
+    type:"bar",
+    data:{
+        labels:["Revenue","Expenses"],
+        datasets:[{
+            data:[{{ data["total_revenue"] }},{{ data["total_expenses"] }}],
+            backgroundColor:["#22c55e","#ef4444"]
+        }]
+    }
+});
+{% endif %}
+</script>
+
+</body>
+</html>
