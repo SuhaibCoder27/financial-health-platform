@@ -6,9 +6,14 @@ from textwrap import wrap
 import io
 import os
 
-app = Flask(__name__, template_folder="../frontend")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-UPLOAD_FOLDER = "uploads"
+app = Flask(
+    __name__,
+    template_folder=os.path.join(BASE_DIR, "templates")
+)
+
+UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
@@ -158,6 +163,8 @@ def download_report():
         mimetype="application/pdf"
     )
 
+
+# -------- Render compatible run -------- #
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)
