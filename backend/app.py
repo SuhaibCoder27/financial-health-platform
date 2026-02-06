@@ -7,7 +7,7 @@ from textwrap import wrap
 import io
 import os
 
-app = Flask(__name__, template_folder="../frontend")
+app = Flask(__name__, template_folder="templates")
 
 UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
