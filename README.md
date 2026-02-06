@@ -66,20 +66,8 @@ The Financial Health Assessment Platform enables businesses and analysts to tran
 
 
 ### Project Structure 
-financial_health_tool/
-│
-├── backend/
-│ ├── app.py
-│ ├── finance_engine.py
-│ ├── bank_api.py
-│ ├── gst_api.py
-│ └── uploads/
-│
-├── frontend/
-│ └── dashboard.html
-│
-├── requirements.txt
-└── README.md
+<img width="300" height="588" alt="image" src="https://github.com/user-attachments/assets/4a743bac-2929-4530-9f06-4c1cdd035517" />
+
 
 ### Create Virtual Environment
 python -m venv venv
