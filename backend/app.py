@@ -1,24 +1,20 @@
 from flask import Flask, request, render_template, send_file
 from finance_engine import financial_analysis
+from db import save_analysis
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 from textwrap import wrap
 import io
 import os
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+app = Flask(__name__, template_folder="../frontend")
 
-app = Flask(
-    __name__,
-    template_folder=os.path.join(BASE_DIR, "templates")
-)
-
-UPLOAD_FOLDER = os.path.join(BASE_DIR, "uploads")
+UPLOAD_FOLDER = "uploads"
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
-# ---------- Helper for PDF paragraph wrapping ---------- #
+# ---------- Helper for clean PDF wrapping ---------- #
 def draw_paragraph(pdf, text, x, y, max_chars=90, line_height=14):
     lines = wrap(text, max_chars)
     for line in lines:
@@ -44,7 +40,11 @@ def home():
             file_path = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
             file.save(file_path)
 
+            # Run financial analysis
             data = financial_analysis(file_path, industry=industry)
+
+            # Save results in PostgreSQL
+            save_analysis(data)
 
     return render_template("dashboard.html", data=data)
 
@@ -60,7 +60,6 @@ def download_report():
         return "No uploaded financial data found."
 
     latest_file = os.path.join(UPLOAD_FOLDER, sorted(files)[-1])
-
     data = financial_analysis(latest_file)
 
     buffer = io.BytesIO()
@@ -69,7 +68,7 @@ def download_report():
 
     x, y = 50, height - 50
 
-    # -------- LANGUAGE TEXT -------- #
+    # -------- Language content -------- #
     if lang == "hi":
         title = "निवेशक वित्तीय स्वास्थ्य रिपोर्ट"
         executive = f"यह रिपोर्ट {data['industry']} व्यवसाय के वित्तीय प्रदर्शन का विश्लेषण करती है।"
@@ -89,7 +88,7 @@ def download_report():
             "and manageable risk exposure."
         )
 
-    # -------- PDF CONTENT -------- #
+    # -------- PDF content -------- #
     pdf.setFont("Helvetica-Bold", 20)
     pdf.drawString(x, y, title)
     y -= 40
@@ -164,7 +163,5 @@ def download_report():
     )
 
 
-# -------- Render compatible run -------- #
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 10000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)
