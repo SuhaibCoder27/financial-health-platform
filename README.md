@@ -6,13 +6,19 @@ A web-based financial analytics platform that evaluates business performance usi
 
 ## 🌐 Live Application
 
-🔗 https://YOUR_DEPLOYED_URL
+🔗 [https://YOUR_DEPLOYED_URL](https://financial-health-platform-5.onrender.com)
+
+Note!!
+-- Its an free deployment server
+-- Server sleeps to save resources
+-- First visitor waits 20–40 seconds
+-- Then site runs fast again
 
 ---
 
 ## 📦 GitHub Repository
 
-🔗 https://github.com/YOUR_USERNAME/financial-health-platform
+🔗 [https://github.com/YOUR_USERNAME/financial-health-platform](https://github.com/SuhaibCoder27/financial-health-platform)
 
 ---
 
