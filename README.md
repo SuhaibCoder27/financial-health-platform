@@ -6,7 +6,7 @@ A web-based financial analytics platform that evaluates business performance usi
 
 ## 🌐 Live Application
 
-🔗 [Financial-health-platform](https://financial-health-platform-5.onrender.com)
+🔗 [Financial-health-platform](https://financial-health-platform-project-1.onrender.com)
 
 ⚠️ Note (Free Hosting Behavior):
 
