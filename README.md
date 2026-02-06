@@ -35,6 +35,7 @@ A web-based financial analytics platform that evaluates business performance usi
 ## 📖 Overview
 
 The Financial Health Assessment Platform converts raw business financial data into actionable performance insights. It automatically cleans, analyzes, forecasts, and visualizes financial metrics to help businesses, analysts, and investors make data-driven decisions.
+
 ---
 
 ## 🚀 Key Capabilities
