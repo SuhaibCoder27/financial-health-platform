@@ -8,11 +8,15 @@ A web-based financial analytics platform that evaluates business performance usi
 
 🔗 [Financial-health-platform](https://financial-health-platform-5.onrender.com)
 
-Note!!
--- Its an free deployment server
--- Server sleeps to save resources
--- First visitor waits 20–40 seconds
--- Then site runs fast again
+⚠️ Note (Free Hosting Behavior):
+
+- Hosted on a free cloud instance
+
+- Server may sleep when idle
+
+- First load may take 20–40 seconds
+
+- Subsequent loads are fast
 
 ---
 
@@ -30,8 +34,7 @@ Note!!
 
 ## 📖 Overview
 
-The Financial Health Assessment Platform enables businesses and analysts to transform raw financial data into meaningful performance insights. By leveraging data analytics and machine learning, the platform delivers actionable financial intelligence in real time.
-
+The Financial Health Assessment Platform converts raw business financial data into actionable performance insights. It automatically cleans, analyzes, forecasts, and visualizes financial metrics to help businesses, analysts, and investors make data-driven decisions.
 ---
 
 ## 🚀 Key Capabilities
@@ -59,7 +62,8 @@ The Financial Health Assessment Platform enables businesses and analysts to tran
 - Flask  
 - Pandas  
 - Scikit-learn  
-- ReportLab  
+- ReportLab
+- PostgreSQL
 
 ### Frontend
 - HTML5  
@@ -111,9 +115,8 @@ Linear Regression is used to predict future revenue based on historical trends.
 
 ### API Integrations (Simulated)
 
-Banking transaction insights
-
-### GST compliance data
+- Banking transaction insights
+- GST compliance data
 
 ### Report Generation
 
@@ -132,6 +135,18 @@ accounts_payable
 loan_amount
 
 inventory_value
+
+## Use Case Impact
+
+✔ Helps businesses understand financial health
+✔ Enables smarter financial planning
+✔ Supports investors with clear insights
+✔ Automates manual financial analysis tasks
+
+## Contact
+
+Developer: Suhaib Sheriff
+GitHub: https://github.com/SuhaibCoder27
 
 
 
