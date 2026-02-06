@@ -1,0 +1,7 @@
+def fetch_bank_data():
+    return {
+        "bank_name": "Mock Bank of India",
+        "account_balance": 1250000,
+        "monthly_inflow": 850000,
+        "monthly_outflow": 620000
+    }
