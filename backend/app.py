@@ -14,10 +14,9 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
 
-# ---------- Helper for clean PDF wrapping ---------- #
+# ---------- PDF TEXT WRAPPER ---------- #
 def draw_paragraph(pdf, text, x, y, max_chars=90, line_height=14):
-    lines = wrap(text, max_chars)
-    for line in lines:
+    for line in wrap(text, max_chars):
         if y < 80:
             pdf.showPage()
             y = A4[1] - 50
@@ -27,7 +26,7 @@ def draw_paragraph(pdf, text, x, y, max_chars=90, line_height=14):
     return y
 
 
-# ---------------- MAIN DASHBOARD ---------------- #
+# ---------------- MAIN PAGE ---------------- #
 @app.route("/", methods=["GET", "POST"])
 def home():
     data = None
@@ -40,11 +39,11 @@ def home():
             file_path = os.path.join(app.config["UPLOAD_FOLDER"], file.filename)
             file.save(file_path)
 
-            # Run financial analysis
-            data = financial_analysis(file_path, industry=industry)
-
-            # Save results in PostgreSQL
-            save_analysis(data)
+            try:
+                data = financial_analysis(file_path, industry)
+                save_analysis(data)
+            except Exception as e:
+                return f"File processing error: {str(e)}"
 
     return render_template("dashboard.html", data=data)
 
@@ -57,7 +56,7 @@ def download_report():
 
     files = os.listdir(UPLOAD_FOLDER)
     if not files:
-        return "No uploaded financial data found."
+        return "No uploaded data found."
 
     latest_file = os.path.join(UPLOAD_FOLDER, sorted(files)[-1])
     data = financial_analysis(latest_file)
@@ -68,100 +67,54 @@ def download_report():
 
     x, y = 50, height - 50
 
-    # -------- Language content -------- #
     if lang == "hi":
         title = "निवेशक वित्तीय स्वास्थ्य रिपोर्ट"
         executive = f"यह रिपोर्ट {data['industry']} व्यवसाय के वित्तीय प्रदर्शन का विश्लेषण करती है।"
-        outlook = "व्यवसाय की वित्तीय स्थिति मजबूत है और जोखिम कम है।"
+        outlook = "व्यवसाय की स्थिति मजबूत है और जोखिम कम है।"
     elif lang == "ta":
         title = "முதலீட்டாளர் நிதி ஆரோக்கிய அறிக்கை"
         executive = f"இந்த அறிக்கை {data['industry']} நிறுவனத்தின் நிதி செயல்திறனை மதிப்பீடு செய்கிறது."
-        outlook = "நிறுவனத்தின் நிதி நிலை வலுவாக உள்ளது மற்றும் ஆபத்து குறைவாக உள்ளது."
+        outlook = "நிறுவனத்தின் நிலை வலுவாக உள்ளது மற்றும் ஆபத்து குறைவாக உள்ளது."
     else:
         title = "Investor-Ready Financial Health Report"
-        executive = (
-            f"This report evaluates the financial performance of a {data['industry']} business "
-            f"using uploaded financial data and analytics."
-        )
-        outlook = (
-            "The business demonstrates strong financial stability with consistent revenue growth "
-            "and manageable risk exposure."
-        )
+        executive = f"This report evaluates the financial performance of a {data['industry']} business."
+        outlook = "The business shows strong growth with manageable risk."
 
-    # -------- PDF content -------- #
     pdf.setFont("Helvetica-Bold", 20)
     pdf.drawString(x, y, title)
     y -= 40
 
     pdf.setFont("Helvetica-Bold", 14)
-    pdf.drawString(x, y, "1. Executive Summary")
+    pdf.drawString(x, y, "Executive Summary")
     y -= 20
 
     pdf.setFont("Helvetica", 11)
     y = draw_paragraph(pdf, executive, x, y)
 
-    y -= 15
-
-    pdf.setFont("Helvetica-Bold", 14)
-    pdf.drawString(x, y, "2. Financial Highlights")
     y -= 20
 
-    pdf.setFont("Helvetica", 11)
-    highlights = [
-        f"Total Revenue: {data['total_revenue']}",
-        f"Total Expenses: {data['total_expenses']}",
-        f"Net Profit: {data['profit']}",
-        f"Forecasted Revenue: {data['forecasted_revenue_next_month']}",
-        f"Health Score: {data['financial_health_score']}",
-        f"Credit Rating: {data['credit_rating']}"
-    ]
-
-    for h in highlights:
-        pdf.drawString(x, y, h)
+    for label, value in [
+        ("Total Revenue", data["total_revenue"]),
+        ("Total Expenses", data["total_expenses"]),
+        ("Profit", data["profit"]),
+        ("Forecast", data["forecasted_revenue_next_month"]),
+        ("Health Score", data["financial_health_score"]),
+        ("Credit Rating", data["credit_rating"]),
+    ]:
+        pdf.drawString(x, y, f"{label}: {value}")
         y -= 16
 
     y -= 20
-
-    pdf.setFont("Helvetica-Bold", 14)
-    pdf.drawString(x, y, "3. Risk Assessment")
-    y -= 20
-
-    pdf.setFont("Helvetica", 11)
-    for r in data["risks"]:
-        pdf.drawString(x + 10, y, f"- {r}")
-        y -= 16
-
-    y -= 15
-
-    pdf.setFont("Helvetica-Bold", 14)
-    pdf.drawString(x, y, "4. Strategic Recommendations")
-    y -= 20
-
-    pdf.setFont("Helvetica", 11)
-    for rec in data["recommendations"]:
-        pdf.drawString(x + 10, y, f"- {rec}")
-        y -= 16
-
-    y -= 15
-
-    pdf.setFont("Helvetica-Bold", 14)
-    pdf.drawString(x, y, "5. Investment Outlook")
-    y -= 20
-
-    pdf.setFont("Helvetica", 11)
     draw_paragraph(pdf, outlook, x, y)
 
     pdf.showPage()
     pdf.save()
     buffer.seek(0)
 
-    return send_file(
-        buffer,
-        as_attachment=True,
-        download_name="Investor_Financial_Report.pdf",
-        mimetype="application/pdf"
-    )
+    return send_file(buffer, as_attachment=True,
+                     download_name="Investor_Financial_Report.pdf",
+                     mimetype="application/pdf")
+
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(host="0.0.0.0", port=5000)
